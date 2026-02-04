@@ -1,218 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta property="og:title" content="Test Your Love ❤️">
-<meta property="og:description" content="Kuchupuchu, pluck the petals and see destiny 🌺">
-
-<title>Test Your Love ❤️</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Test Your Love 🌸</title>
 
 <style>
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
+}
+
+body {
   height: 100vh;
-  background: radial-gradient(circle, #ffd6dc, #f2a2b3);
+  background: radial-gradient(circle, #2e7d32, #0b3d0b);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Georgia, serif;
   overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Screens */
-.screen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
-}
-.screen.active { display: flex; }
-
-button {
-  background: #7b0000;
-  color: white;
-  border: none;
-  padding: 14px 30px;
-  border-radius: 30px;
-  font-size: 18px;
-  margin-top: 20px;
-}
-
-/* 🌺 Flower */
-.flower {
+.container {
   position: relative;
-  width: min(85vw, 300px);
-  height: min(85vw, 300px);
-  animation: breathe 3.5s ease-in-out infinite;
+  width: 320px;
+  height: 320px;
 }
 
-@keyframes breathe {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
-/* 🌺 Petals */
-.petal {
-  position: absolute;
-  width: 58%;
-  height: 72%;
-  left: 21%;
-  top: 14%;
-  background:
-    radial-gradient(circle at 30% 30%, #ffdede 6%, transparent 7%),
-    radial-gradient(circle at 60% 45%, #ffdede 6%, transparent 7%),
-    radial-gradient(circle at 45% 70%, #ffdede 6%, transparent 7%),
-    linear-gradient(#a30000, #5c0000);
-  border-radius: 70% 70% 90% 90%;
-  transform-origin: bottom center;
-  cursor: pointer;
-  box-shadow: 0 12px 18px rgba(0,0,0,0.25);
-}
-
-.petal.fall {
-  animation: fall 1.6s forwards ease-in;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(120vh) rotate(140deg);
-    opacity: 0;
-  }
-}
-
-/* Center cavity */
 .center {
   position: absolute;
-  width: 34%;
-  height: 34%;
-  left: 33%;
-  top: 33%;
-  background: radial-gradient(circle, #2a0000, #000);
+  width: 110px;
+  height: 110px;
+  background: radial-gradient(circle, #5b2a1d, #2a120b);
   border-radius: 50%;
-  box-shadow: inset 0 0 18px rgba(0,0,0,0.6);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
 }
 
-/* Popup text */
-.popup {
+.message {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255,255,255,0.97);
-  padding: 18px 28px;
-  border-radius: 25px;
-  font-size: 20px;
-  display: none;
-  z-index: 10;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-size: 18px;
+  opacity: 0;
+  z-index: 20;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-/* Hearts */
-.heart {
-  position: fixed;
-  top: -20px;
-  font-size: 22px;
-  animation: heartFall 3s linear forwards;
+.petal {
+  position: absolute;
+  width: 120px;
+  height: 145px;
+  background: radial-gradient(circle at 30% 30%, #ffb3c6, #c2185b);
+  border-radius: 55% 55% 60% 60%;
+  top: 50%;
+  left: 50%;
+  transform-origin: center bottom;
+  transition: transform 0.4s ease;
+  cursor: pointer;
 }
-@keyframes heartFall {
-  to { transform: translateY(100vh); opacity: 0; }
+
+.petal::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  background-image: radial-gradient(#ffd6e5 18%, transparent 19%);
+  background-size: 14px 14px;
+  border-radius: inherit;
+  opacity: 0.9;
+}
+
+.fall {
+  animation: fall 1.2s forwards ease-in;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(500px) rotate(120deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 260px;
+    height: 260px;
+  }
+  .petal {
+    width: 100px;
+    height: 120px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- INTRO -->
-<div class="screen active" id="intro">
-  <h1>❤️ Hi Kuchupuchu ❤️</h1>
-  <p>I made this little love test for you 🌸</p>
-  <button onclick="start()">Start</button>
-</div>
-
-<!-- GAME -->
-<div class="screen" id="game">
-  <p>Pluck the petals one by one</p>
-  <div class="flower" id="flower"></div>
-</div>
-
-<div class="popup" id="popup"></div>
+<div class="container" id="flower"></div>
+<div class="message" id="popup"></div>
 
 <script>
-const messages = [
-  "You love me",
-  "You love me not",
-  "You love me",
-  "You love me not",
-  "You love me"
-];
-
-let remaining = [...messages];
 const flower = document.getElementById("flower");
 const popup = document.getElementById("popup");
 
-function start() {
-  document.getElementById("intro").classList.remove("active");
-  document.getElementById("game").classList.add("active");
-}
+const petalCount = 5;
+let petals = [];
+let messages = [];
+let clicks = 0;
 
-messages.forEach((_, i) => {
+// Randomly decide ending
+const finalLove = Math.random() > 0.5;
+
+// Create message order
+for (let i = 0; i < petalCount - 1; i++) {
+  messages.push(Math.random() > 0.5 ? "You love me 💖" : "You love me not 💔");
+}
+messages.push(finalLove ? "You love me 💖" : "You love me not 💔");
+
+// Create petals
+for (let i = 0; i < petalCount; i++) {
   const petal = document.createElement("div");
   petal.className = "petal";
-  petal.style.transform = `rotate(${(360 / 5) * i}deg) translateY(-40%)`;
 
-  petal.onclick = () => {
-    if (petal.classList.contains("fall")) return;
+  const angle = (360 / petalCount) * i;
+  const radius = 75;
 
-    const index = Math.floor(Math.random() * remaining.length);
-    const result = remaining.splice(index, 1)[0];
+  const x = Math.cos(angle * Math.PI / 180) * radius;
+  const y = Math.sin(angle * Math.PI / 180) * radius;
 
-    popup.innerText = result;
-    popup.style.display = "block";
-    petal.classList.add("fall");
+  petal.style.transform = `
+    translate(-50%, -50%)
+    translate(${x}px, ${y}px)
+    rotate(${angle}deg)
+  `;
 
-    for (let i = 0; i < 5; i++) {
-      const h = document.createElement("div");
-      h.className = "heart";
-      h.innerText = "❤️";
-      h.style.left = Math.random() * 100 + "vw";
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 3000);
-    }
+  petal.style.zIndex = 10 - i;
 
-    setTimeout(() => popup.style.display = "none", 1200);
+  petal.addEventListener("click", () => handleClick(petal));
 
-    if (remaining.length === 0) {
-      setTimeout(() => showResult(result), 1600);
-    }
-  };
-
+  petals.push(petal);
   flower.appendChild(petal);
-});
+}
 
-flower.appendChild(
-  Object.assign(document.createElement("div"), { className: "center" })
-);
+// Add center last
+const center = document.createElement("div");
+center.className = "center";
+flower.appendChild(center);
 
-function showResult(result) {
-  document.body.innerHTML = `
+function handleClick(petal) {
+  if (petal.classList.contains("fall")) return;
+
+  const msg = messages[clicks];
+  clicks++;
+
+  popup.innerText = msg;
+  popup.style.opacity = 1;
+
+  setTimeout(() => popup.style.opacity = 0, 900);
+
+  petal.classList.add("fall");
+
+  if (clicks === petalCount) {
+    setTimeout(() => {
+      document.body.innerHTML = finalLove
+        ? successPage()
+        : sadPage();
+    }, 1400);
+  }
+}
+
+function successPage() {
+  return `
     <div style="
       height:100vh;
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
-      font-size:30px;
-      background:${result === "You love me" ? "#ffd1dc" : "#cfd8dc"};
+      background:#ffebee;
       text-align:center;
-      padding:20px;">
-      <div>
-        ${result === "You love me"
-          ? "🤗 FREE HUG PASS FOR KUCHUPUCHU 🤗"
-          : "😢 Maybe next time, Kuchupuchu 💔"}
-      </div>
-      <button onclick="location.reload()">Replay</button>
+      font-family:Segoe UI;">
+      <h1 style="font-size:32px;color:#c2185b;">Free Hug Pass 🤗</h1>
+      <p style="font-size:20px;margin-top:10px;">
+        Kuchupuchu loves you forever 💖
+      </p>
+      <div style="font-size:80px;margin-top:20px;">🤗</div>
+    </div>
+  `;
+}
+
+function sadPage() {
+  return `
+    <div style="
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      background:#263238;
+      color:white;
+      text-align:center;
+      font-family:Segoe UI;">
+      <h1 style="font-size:30px;">Oh no 😢</h1>
+      <p style="font-size:18px;margin-top:10px;">
+        Kuchupuchu is shy today…
+      </p>
+      <div style="font-size:80px;margin-top:20px;">🥀</div>
     </div>
   `;
 }
